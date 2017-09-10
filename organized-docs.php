@@ -3,7 +3,7 @@
 Plugin Name: Organized Docs
 Plugin URI: https://isabelcastillo.com/docs/category/organized-docs-wordpress-plugin
 Description: Create organized documentation for multiple products, organized by product, and by subsections within each product.
-Version: 2.6.3
+Version: 2.6.2
 Author: Isabel Castillo
 Author URI: https://isabelcastillo.com
 License: GPL2
@@ -70,6 +70,7 @@ class Isa_Organized_Docs{
 	* Only upon plugin activation, flush rewrite rules for custom post types.
 	*/
 	public static function activate() { 
+		set_transient( 'od_activated', 1 );
 		self::setup_docs_taxonomy();
 		self::create_docs_cpt();
 		flush_rewrite_rules();
@@ -1302,6 +1303,10 @@ class Isa_Organized_Docs{
 	}
 }
 }
+$Isa_Organized_Docs = Isa_Organized_Docs::get_instance();
+register_deactivation_hook(__FILE__, array('Isa_Organized_Docs', 'deactivate')); 
+register_activation_hook(__FILE__, array('Isa_Organized_Docs', 'activate'));
+include_once ISA_ORGANIZED_DOCS_PATH . 'includes/templating.php';
 
 /**
  * This function runs when WordPress completes its upgrade process
@@ -1351,9 +1356,3 @@ function od_display_install_notice() {
  }
 }
 add_action( 'admin_notices', 'od_display_install_notice' );
-
-
-$Isa_Organized_Docs = Isa_Organized_Docs::get_instance();
-register_deactivation_hook(__FILE__, array('Isa_Organized_Docs', 'deactivate')); 
-register_activation_hook(__FILE__, array('Isa_Organized_Docs', 'activate'));
-include_once ISA_ORGANIZED_DOCS_PATH . 'includes/templating.php';
