@@ -1302,6 +1302,57 @@ class Isa_Organized_Docs{
 	}
 }
 }
+
+/**
+ * This function runs when WordPress completes its upgrade process
+ * It iterates through each plugin updated to see if ours is included
+ * @param $upgrader_object Array
+ * @param $options Array
+ */
+function od_upgrade_completed( $upgrader_object, $options ) {
+ // The path to our plugin's main file
+ $our_plugin = plugin_basename( __FILE__ );
+ // If an update has taken place and the updated type is plugins and the plugins element exists
+ if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+  // Iterate through the plugins being updated and check if ours is there
+  foreach( $options['plugins'] as $plugin ) {
+   if( $plugin == $our_plugin ) {
+    // Set a transient to record that our plugin has just been updated
+    set_transient( 'od_updated', 1 );
+   }
+  }
+ }
+}
+add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
+
+/**
+ * Show a notice to anyone who has just updated this plugin
+ * This notice shouldn't display to anyone who has just installed the plugin for the first time
+ */
+function od_display_update_notice() {
+ // Check the transient to see if we've just updated the plugin
+ if( get_transient( 'od_updated' ) ) {
+  echo '<div class="notice notice-success">' . __( 'Thanks for updating', 'organized-docs' ) . '</div>';
+  delete_transient( 'od_updated' );
+ }
+}
+add_action( 'admin_notices', 'od_display_update_notice' );
+
+/**
+ * Show a notice to anyone who has just installed the plugin for the first time
+ * This notice shouldn't display to anyone who has just updated this plugin
+ */
+function od_display_install_notice() {
+ // Check the transient to see if we've just activated the plugin
+ if( get_transient( 'od_activated' ) ) {
+  echo '<div class="notice notice-success">' . __( 'Thanks for installing', 'organized-docs' ) . '</div>';
+  // Delete the transient so we don't keep displaying the activation message
+ delete_transient( 'od_activated' );
+ }
+}
+add_action( 'admin_notices', 'od_display_install_notice' );
+
+
 $Isa_Organized_Docs = Isa_Organized_Docs::get_instance();
 register_deactivation_hook(__FILE__, array('Isa_Organized_Docs', 'deactivate')); 
 register_activation_hook(__FILE__, array('Isa_Organized_Docs', 'activate'));
