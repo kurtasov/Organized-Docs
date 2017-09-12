@@ -1323,6 +1323,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
  if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
   // Iterate through the plugins being updated and check if ours is there
   foreach( $options['plugins'] as $plugin ) {
+   error_log($plugin); 	  
    if( $plugin == $our_plugin ) {
     // Set a transient to record that our plugin has just been updated
     set_transient( 'od_updated', 1 );
