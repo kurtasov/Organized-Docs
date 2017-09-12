@@ -1317,7 +1317,8 @@ include_once ISA_ORGANIZED_DOCS_PATH . 'includes/templating.php';
  */
 function od_upgrade_completed( $upgrader_object, $options ) {
  // The path to our plugin's main file
-/* $our_plugin = plugin_basename( __FILE__ );
+ $our_plugin = plugin_basename( __FILE__ );
+ error_log($our_plugin);
  // If an update has taken place and the updated type is plugins and the plugins element exists
  if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
   // Iterate through the plugins being updated and check if ours is there
@@ -1328,8 +1329,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
     error_log("Update check? ........passed!");
    }
   }
- }*/
-  error_log("Update check?.. ........passed!");	
+ }
 }
 add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
 
