@@ -3,7 +3,7 @@
 Plugin Name: Organized Docs
 Plugin URI: https://github.com/kurtasov/Organized-Docs
 Description: Create organized documentation for multiple products, organized by product, and by subsections within each product.
-Version: 2.6.3
+Version: 2.6.4
 Author: Isabel Castillo
 Author URI: https://isabelcastillo.com
 License: GPL2
@@ -1339,6 +1339,7 @@ function od_display_update_notice() {
  // Check the transient to see if we've just updated the plugin
  if( get_transient( 'od_updated' ) ) {
   echo '<div class="notice notice-success">' . __( 'Thanks for updating', 'organized-docs' ) . '</div>';
+  error_log("Update check.........passed");
   delete_transient( 'od_updated' );
  }
 }
