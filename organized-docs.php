@@ -1338,7 +1338,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
    }	
  }
 }
-add_action( 'upgrader_process_complete', 'od_upgrade_completed', PHP_INT_MAX-1, 2 );
+add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
 
 /**
  * Show a notice to anyone who has just updated this plugin
@@ -1346,6 +1346,7 @@ add_action( 'upgrader_process_complete', 'od_upgrade_completed', PHP_INT_MAX-1, 
  */
 function od_display_update_notice() {
  // Check the transient to see if we've just updated the plugin
+ error_log("od_display_update_notice invoked");
  if( get_transient( 'od_updated' ) ) {
   echo '<div class="notice notice-success">' . __( 'Thanks for updating', 'organized-docs' ) . '</div>';
   error_log("Update check passed: the transient is true so you see this message.");
