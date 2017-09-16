@@ -1338,7 +1338,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
    }	
  }
 }
-add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
+add_action( 'upgrader_process_complete', 'od_upgrade_completed', PHP_INT_MAX-1, 2 );
 
 /**
  * Show a notice to anyone who has just updated this plugin
