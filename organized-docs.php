@@ -3,7 +3,7 @@
 Plugin Name: Organized Docs
 Plugin URI: https://github.com/kurtasov/Organized-Docs
 Description: Create organized documentation for multiple products, organized by product, and by subsections within each product.
-Version: 2.6.6
+Version: 2.6.3
 Author: Isabel Castillo
 Author URI: https://isabelcastillo.com
 License: GPL2
@@ -1318,16 +1318,15 @@ include_once ISA_ORGANIZED_DOCS_PATH . 'includes/templating.php';
 function od_upgrade_completed( $upgrader_object, $options ) {
  // The path to our plugin's main file
  $our_plugin = plugin_basename( __FILE__ );
- error_log($our_plugin);
+ error_log("Our plugin detected as: " . $our_plugin);
  // If an update has taken place and the updated type is plugins and the plugins element exists
  if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
   // Iterate through the plugins being updated and check if ours is there
   foreach( $options['plugins'] as $plugin ) {
-   error_log($plugin); 	  
+   error_log("A plugin on the updated list: " . $plugin);
    if( $plugin == $our_plugin ) {
     // Set a transient to record that our plugin has just been updated
     set_transient( 'od_updated', 1 );
-    error_log("Update check? ........passed!");
    }
   }
  }
@@ -1342,7 +1341,7 @@ function od_display_update_notice() {
  // Check the transient to see if we've just updated the plugin
  if( get_transient( 'od_updated' ) ) {
   echo '<div class="notice notice-success">' . __( 'Thanks for updating', 'organized-docs' ) . '</div>';
-  error_log("Update check.........passed");
+  error_log("Update check passed: the transient is true so you see this message.");
   delete_transient( 'od_updated' );
  }
 }
