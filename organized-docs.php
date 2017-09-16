@@ -72,6 +72,7 @@ class Isa_Organized_Docs{
 	*/
 	public static function activate() { 
 		set_transient( 'od_activated', 1 );
+		error_log("Plugin activated!!!!");
 		self::setup_docs_taxonomy();
 		self::create_docs_cpt();
 		flush_rewrite_rules();
