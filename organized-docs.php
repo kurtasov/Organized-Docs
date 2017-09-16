@@ -1321,7 +1321,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
  error_log("Our plugin detected as: " . $our_plugin);
  error_log("Options detected: " . json_encode($options));
  // If an update has taken place and the updated type is plugins and the plugins element exists
- if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+ if( $options['action'] == 'update' && $options['type'] == 'plugin' ) {
   // Iterate through the plugins being updated and check if ours is there
   foreach( $options['plugins'] as $plugin ) {
    error_log("A plugin on the updated list: " . $plugin);
