@@ -1330,7 +1330,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
     set_transient( 'od_updated', 1 );
    }
   }
- } elseif ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugin'] ) {
+ } elseif ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset($options['plugin']) ) {
     if( $options['plugin'] == $our_plugin ) {
     // Set a transient to record that our plugin has just been updated
     set_transient( 'od_updated', 1 );
