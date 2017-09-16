@@ -1321,7 +1321,7 @@ function od_upgrade_completed( $upgrader_object, $options ) {
  error_log("Our plugin detected as: " . $our_plugin);
  error_log("Options detected: " . json_encode($options));
  // If an update has taken place and the updated type is plugins and the plugins element exists
- if( $options['action'] == 'update' && $options['type'] == 'plugin' ) {
+ if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
   // Iterate through the plugins being updated and check if ours is there
   foreach( $options['plugins'] as $plugin ) {
    error_log("A plugin on the updated list: " . $plugin);
@@ -1330,6 +1330,11 @@ function od_upgrade_completed( $upgrader_object, $options ) {
     set_transient( 'od_updated', 1 );
    }
   }
+ } elseif ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugin'] ) {
+    if( $options['plugin'] == $our_plugin ) {
+    // Set a transient to record that our plugin has just been updated
+    set_transient( 'od_updated', 1 );
+   }	
  }
 }
 add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
