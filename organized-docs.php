@@ -146,6 +146,9 @@ class Isa_Organized_Docs{
 			);
 
 		register_post_type( 'isa_docs' , $args );
+		if ( post_type_exists('isa_docs') && !post_type_supports('isa_docs', 'revisions') ) {
+			add_post_type_support('isa_docs', 'revisions');
+		}
 
 	}
 	/** 
