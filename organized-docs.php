@@ -140,7 +140,7 @@ class Isa_Organized_Docs{
 						'not_found_in_trash'	=> __( 'No docs found in Trash','organized-docs' ),
 						'parent'				=> __( 'Parent Docs','organized-docs' ),
 					),
-				'supports'		=> array( 'title', 'editor', 'author', 'thumbnail', 'comments' ),
+				'supports'		=> array( 'title', 'editor', 'author', 'thumbnail', 'comments', 'revisions' ),
 				'has_archive'	=> true,
 				'menu_icon'		=> 'dashicons-book'
 			);
@@ -1311,60 +1311,31 @@ register_activation_hook(__FILE__, array('Isa_Organized_Docs', 'activate'));
 include_once ISA_ORGANIZED_DOCS_PATH . 'includes/templating.php';
 
 /**
- * This function runs when WordPress completes its upgrade process
- * It iterates through each plugin updated to see if ours is included
+ * Runs on upgrade process completion
  * @param $upgrader_object Array
  * @param $options Array
  */
 function od_upgrade_completed( $upgrader_object, $options ) {
- // The path to our plugin's main file
- $our_plugin = plugin_basename( __FILE__ );
- error_log("Our plugin detected as: " . $our_plugin);
- error_log("Options detected: " . json_encode($options));
- // If an update has taken place and the updated type is plugins and the plugins element exists
- if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
-  // Iterate through the plugins being updated and check if ours is there
-  foreach( $options['plugins'] as $plugin ) {
-   error_log("A plugin on the updated list: " . $plugin);
-   if( $plugin == $our_plugin ) {
-    // Set a transient to record that our plugin has just been updated
-    set_transient( 'od_updated', 1 );
-   }
-  }
- } elseif ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset($options['plugin']) ) {
-    if( $options['plugin'] == $our_plugin ) {
-    // Set a transient to record that our plugin has just been updated
-    set_transient( 'od_updated', 1 );
-   }	
- }
+	$our_plugin = plugin_basename( __FILE__ ); // The path to our plugin's main file
+	// If an update has taken place and the updated type is plugin and the plugins option exists
+	if( $options['action'] == 'update' && $options['type'] == 'plugin' && isset( $options['plugins'] ) ) {
+		// Iterate through the plugins being updated and check if ours is there
+		foreach( $options['plugins'] as $plugin ) {
+			if( $plugin == $our_plugin ) {
+				migrate_add_revisions_support();
+			}
+		}
+	} elseif ( $options['action'] == 'update' && $options['type'] == 'plugin' && isset($options['plugin']) ) {
+		if( $options['plugin'] == $our_plugin ) {
+			migrate_add_revisions_support();
+		}	
+	}
 }
+
 add_action( 'upgrader_process_complete', 'od_upgrade_completed', 10, 2 );
 
-/**
- * Show a notice to anyone who has just updated this plugin
- * This notice shouldn't display to anyone who has just installed the plugin for the first time
- */
-function od_display_update_notice() {
- // Check the transient to see if we've just updated the plugin
- error_log("od_display_update_notice invoked");
- if( get_transient( 'od_updated' ) ) {
-  echo '<div class="notice notice-success">' . __( 'Thanks for updating', 'organized-docs' ) . '</div>';
-  error_log("Update check passed: the transient is true so you see this message.");
-  delete_transient( 'od_updated' );
- }
+function migrate_add_revisions_support() {
+	if ( post_type_exists('isa_docs') && !post_type_supports('isa_docs', 'revisions') ) {
+		add_post_type_support('isa_docs', 'revisions');
+	}
 }
-add_action( 'admin_notices', 'od_display_update_notice' );
-
-/**
- * Show a notice to anyone who has just installed the plugin for the first time
- * This notice shouldn't display to anyone who has just updated this plugin
- */
-function od_display_install_notice() {
- // Check the transient to see if we've just activated the plugin
- if( get_transient( 'od_activated' ) ) {
-  echo '<div class="notice notice-success">' . __( 'Thanks for installing', 'organized-docs' ) . '</div>';
-  // Delete the transient so we don't keep displaying the activation message
- delete_transient( 'od_activated' );
- }
-}
-add_action( 'admin_notices', 'od_display_install_notice' );
